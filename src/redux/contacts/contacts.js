@@ -7,17 +7,46 @@ export const contactsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://6391cf11ac688bbe4c533d42.mockapi.io',
   }),
+  tagTypes: ['Contact'],
   endpoints: builder => ({
     getContacts: builder.query({
       query: () => `/phonebook`,
     }),
+    providesTags: ['Contact'],
+    addContact: builder.mutation({
+      // note: an optional `queryFn` may be used in place of `query`
+      query: ({ lastName, firstName, phone }) => ({
+        url: '/phonebook',
+        method: 'POST',
+        body: { lastName, firstName, phone },
+      }),
+      invalidatesTags: ['Contact'],
+    }),
 
-    // getContacts: builder.query({
-    //   query: () => `/phonebook`,
+    deleteContact: builder.mutation({
+      // note: an optional `queryFn` may be used in place of `query`
+      query: itemId => ({
+        url: `/phonebook/${itemId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contact'],
+    }),
+    // deleteContact: builder.mutation({
+    //   query(itemId) {
+    //     return {
+    //       url: `/phonebook/${itemId}`,
+    //       method: 'DELETE',
+    //     };
+    //   },
+    //   invalidatesTags: ['Contact'],
     // }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetContactsQuery } = contactsApi;
+export const {
+  useGetContactsQuery,
+  useAddContactMutation,
+  useDeleteContactMutation,
+} = contactsApi;

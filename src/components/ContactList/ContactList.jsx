@@ -3,7 +3,7 @@ import { Box } from '../Box';
 import { List, Item, Name, Number } from './ContactList.styled';
 import { Button } from '../Button';
 
-export const ContactList = ({ list, onDelete }) => {
+export const ContactList = ({ list, onDelete, deleting }) => {
   return (
     <Box
       display="block"
@@ -19,13 +19,8 @@ export const ContactList = ({ list, onDelete }) => {
             <Item key={item.id}>
               <Name>{item.lastName + ', ' + item.firstName + ':'}</Name>
               <Number>{item.phone}</Number>
-              <Button
-                type="button"
-                onClick={() => {
-                  onDelete(item.id);
-                }}
-              >
-                Delete
+              <Button type="button" onClick={() => onDelete(item.id)}>
+                {deleting ? 'Deleting...' : 'Delete'}
               </Button>
             </Item>
           ))
