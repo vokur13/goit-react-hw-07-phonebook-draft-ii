@@ -30,7 +30,7 @@ export const Filter = ({ onChange }) => {
       borderRadius="normal"
       boxShadow="basic"
     >
-      <Label htmlFor={filterID}>Find contacts by name</Label>
+      <Label htmlFor={filterID}>Find contacts by last name</Label>
       <Input id={filterID} type="text" {...register('filter')} />
     </Box>
   );

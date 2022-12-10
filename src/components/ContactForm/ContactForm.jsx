@@ -7,7 +7,8 @@ import { Form, Label, Input } from './ContactForm.styled';
 import { Button } from '../Button';
 
 export const ContactForm = ({ onFormSubmit }) => {
-  const nameId = nanoid();
+  const lastNameId = nanoid();
+  const firstNameId = nanoid();
   const phoneID = nanoid();
 
   //   const [isActive, setIsActive] = useState(false);
@@ -19,7 +20,7 @@ export const ContactForm = ({ onFormSubmit }) => {
     //     watch,
     formState,
     formState: { errors, isSubmitSuccessful },
-  } = useForm({ defaultValues: { name: '', phone: '' } });
+  } = useForm({ defaultValues: { lastName: '', firstName: '', phone: '' } });
 
   const onSubmit = data => {
     onFormSubmit(data);
@@ -27,7 +28,7 @@ export const ContactForm = ({ onFormSubmit }) => {
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
-      reset({ name: '', phone: '' });
+      reset({ lastName: '', firstName: '', phone: '' });
     }
   }, [formState, isSubmitSuccessful, reset]);
 
@@ -42,20 +43,35 @@ export const ContactForm = ({ onFormSubmit }) => {
       boxShadow="basic"
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Label htmlFor={nameId}>Name</Label>
+        <Label htmlFor={lastNameId}>Last name</Label>
         <Input
-          id={nameId}
+          id={lastNameId}
           type="text"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          {...register('name', {
+          title="Last name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          {...register('lastName', {
             required: true,
             pattern:
               /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/i,
           })}
-          aria-invalid={errors.name ? 'true' : 'false'}
+          aria-invalid={errors.lastName ? 'true' : 'false'}
         />
-        {errors.name?.type === 'required' && (
-          <p role="alert">Name is required</p>
+        {errors.lastName?.type === 'required' && (
+          <p role="alert">Last name is required</p>
+        )}
+        <Label htmlFor={firstNameId}>First name</Label>
+        <Input
+          id={firstNameId}
+          type="text"
+          title="First name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          {...register('firstName', {
+            required: true,
+            pattern:
+              /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/i,
+          })}
+          aria-invalid={errors.firstName ? 'true' : 'false'}
+        />
+        {errors.firstName?.type === 'required' && (
+          <p role="alert">First name is required</p>
         )}
         <Label htmlFor={phoneID}>Number</Label>
         <Input
@@ -79,6 +95,6 @@ export const ContactForm = ({ onFormSubmit }) => {
 
 // disabled={!data}
 
-ContactForm.propTypes = {
-  onFormSubmit: PropTypes.func.isRequired,
-};
+// ContactForm.propTypes = {
+//   onFormSubmit: PropTypes.func.isRequired,
+// };

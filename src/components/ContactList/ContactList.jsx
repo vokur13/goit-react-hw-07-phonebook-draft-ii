@@ -14,33 +14,40 @@ export const ContactList = ({ list, onDelete }) => {
       boxShadow="basic"
     >
       <List>
-        {list.map(item => (
-          <Item key={item.id}>
-            <Name>{item.name + ':'}</Name>
-            <Number>{item.phone}</Number>
-            <Button
-              type="button"
-              onClick={() => {
-                onDelete(item.id);
-              }}
-            >
-              Delete
-            </Button>
-          </Item>
-        ))}
+        {list
+          .map(item => (
+            <Item key={item.id}>
+              <Name>{item.lastName + ', ' + item.firstName + ':'}</Name>
+              <Number>{item.phone}</Number>
+              <Button
+                type="button"
+                onClick={() => {
+                  onDelete(item.id);
+                }}
+              >
+                Delete
+              </Button>
+            </Item>
+          ))
+          .sort((a, b) =>
+            a.props.children[0].props.children.localeCompare(
+              b.props.children[0].props.children
+            )
+          )}
       </List>
     </Box>
   );
 };
 
-ContactList.propTypes = {
-  list: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      createdAt: PropTypes.string,
-      name: PropTypes.string.isRequired,
-      phone: PropTypes.string.isRequired,
-    })
-  ),
-  onDelete: PropTypes.func.isRequired,
-};
+// ContactList.propTypes = {
+//   list: PropTypes.arrayOf(
+//     PropTypes.exact({
+//       id: PropTypes.string.isRequired,
+//       createdAt: PropTypes.string,
+//       lastName: PropTypes.string.isRequired,
+//       firstName: PropTypes.string.isRequired,
+//       phone: PropTypes.string.isRequired,
+//     })
+//   ),
+//   onDelete: PropTypes.func.isRequired,
+// };

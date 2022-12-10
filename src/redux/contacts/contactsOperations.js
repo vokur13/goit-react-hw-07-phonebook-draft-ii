@@ -7,7 +7,7 @@ export const fetchContacts = createAsyncThunk(
   'contacts/fetchAll',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('/contacts');
+      const response = await axios.get('/phonebook');
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -17,9 +17,13 @@ export const fetchContacts = createAsyncThunk(
 
 export const addContact = createAsyncThunk(
   'contacts/addContact',
-  async ({ name, phone }, thunkAPI) => {
+  async ({ lastName, firstName, phone }, thunkAPI) => {
     try {
-      const response = await axios.post('/contacts', { name, phone });
+      const response = await axios.post('/phonebook', {
+        lastName,
+        firstName,
+        phone,
+      });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -31,7 +35,7 @@ export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
   async (itemId, thunkAPI) => {
     try {
-      const response = await axios.delete(`/contacts/${itemId}`);
+      const response = await axios.delete(`/phonebook/${itemId}`);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

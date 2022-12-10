@@ -3,10 +3,8 @@ import styled from 'styled-components';
 export const List = styled.ul``;
 
 export const Item = styled.li`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.5fr;
   padding: ${props => `${props.theme.space[0]}px`};
   align-items: center;
   &:not(:last-child) {

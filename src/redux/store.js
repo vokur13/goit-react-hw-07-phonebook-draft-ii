@@ -1,34 +1,30 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { contactsSlice } from './contacts/contactsSlice';
-// import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
-// import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-import logger from 'redux-logger';
-// import storage from 'redux-persist/lib/storage';
-// import { persistReducer, persistStore } from 'redux-persist';
-// import thunk from 'redux-thunk';
-
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-//   stateReconciler: autoMergeLevel1,
-//   // stateReconciler: hardSet,
-//   whitelist: ['contacts'],
-// };
-
-// const persistedReducer = persistReducer(persistConfig, contactsSlice.reducer);
+// import { configureStore } from '@reduxjs/toolkit';
+// import { contactsSlice } from './contacts/contactsSlice';
+// import logger from 'redux-logger';
 
 // export const store = configureStore({
 //   reducer: {
-//     contacts: persistedReducer,
+//     contacts: contactsSlice.reducer,
 //   },
-//   middleware: [thunk],
+//   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
 // });
 
-// export const persistor = persistStore(store);
+import { configureStore } from '@reduxjs/toolkit';
+// Or from '@reduxjs/toolkit/query/react'
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { contactsApi } from './contacts/contacts';
 
 export const store = configureStore({
   reducer: {
-    contacts: contactsSlice.reducer,
+    // Add the generated reducer as a specific top-level slice
+    [contactsApi.reducerPath]: contactsApi.reducer,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
+  // Adding the api middleware enables caching, invalidation, polling,
+  // and other useful features of `rtk-query`.
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(contactsApi.middleware),
 });
+
+// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
+// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
+setupListeners(store.dispatch);
