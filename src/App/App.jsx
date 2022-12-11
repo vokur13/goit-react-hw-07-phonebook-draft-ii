@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { toast } from 'react-toastify';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -22,7 +21,7 @@ export const App = () => {
     // refetchOnFocus: true,
     // refetchOnReconnect: true,
   });
-  const [addContact, { isLoading, isSuccess }] = useAddContactMutation();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const filter = useSelector(contactsSelectors.selectFilter);
   const notify = text => toast(text);
 
@@ -38,13 +37,15 @@ export const App = () => {
       );
       checkName
         ? alert(`${(lastName, firstName)} is already in contacts`)
-        : await addContact({
-            id: nanoid(),
-            lastName,
-            firstName,
-            phone,
-          });
-      //  notify(`Contact ${lastName}, ${firstName} created`);
+        : await addContact(
+            {
+              id: nanoid(),
+              lastName,
+              firstName,
+              phone,
+            },
+            notify(`Contact ${lastName}, ${firstName} created`)
+          );
     } catch (error) {
       console.log(error.message);
     }
