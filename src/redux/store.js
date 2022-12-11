@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { contactsApi } from './contacts/contacts';
 import { contactsSlice } from './contacts/contactsSlice';
-// import logger from 'redux-logger';
+import logger from 'redux-logger';
 
 export const store = configureStore({
   reducer: {
@@ -13,8 +13,11 @@ export const store = configureStore({
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(contactsApi.middleware),
+  middleware: getDefaultMiddleware => [
+    ...getDefaultMiddleware(),
+    contactsApi.middleware,
+    logger,
+  ],
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
