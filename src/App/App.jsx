@@ -44,7 +44,7 @@ export const App = () => {
               firstName,
               phone,
             },
-            notify(`Contact ${lastName}, ${firstName} created`)
+            notify(`Contact ${lastName} ${firstName} created`)
           );
     } catch (error) {
       console.log(error.message);

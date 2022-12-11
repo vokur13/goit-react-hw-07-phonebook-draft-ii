@@ -26,11 +26,11 @@ export const contactsApi = createApi({
             [{ type: 'Contacts', id: 'LIST' }],
     }),
     addContact: build.mutation({
-      query({ lastName, firstName, phone }) {
+      query(body) {
         return {
           url: `/phonebook`,
           method: 'POST',
-          body: { lastName, firstName, phone },
+          body,
         };
       },
       // Invalidates all Post-type queries providing the `LIST` id - after all, depending of the sort order,

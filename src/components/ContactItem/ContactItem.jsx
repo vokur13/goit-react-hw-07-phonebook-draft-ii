@@ -1,10 +1,12 @@
-import { useDeleteContactMutation } from 'redux/contacts/contacts';
 import PropTypes from 'prop-types';
+import { useDeleteContactMutation } from 'redux/contacts/contacts';
+import { toast } from 'react-toastify';
 import { Item, Name, Number } from './ContactItem.styled';
 import { Button } from '../Button';
 
 export const ContactItem = ({ id, lastName, firstName, phone }) => {
   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const notify = text => toast(text);
 
   return (
     <Item>
@@ -12,7 +14,9 @@ export const ContactItem = ({ id, lastName, firstName, phone }) => {
       <Number>{phone}</Number>
       <Button
         type="button"
-        onClick={() => deleteContact(id)}
+        onClick={() =>
+          deleteContact(id, notify(`Contact ${lastName} ${firstName} removed`))
+        }
         disabled={isDeleting}
       >
         {isDeleting ? 'Deleting...' : 'Delete'}
