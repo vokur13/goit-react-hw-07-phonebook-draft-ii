@@ -1,15 +1,11 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   useGetContactsQuery,
   useAddContactMutation,
   useDeleteContactMutation,
 } from 'redux/contacts/contacts';
-import {
-  contactsOperations,
-  contactsSelectors,
-  contactsSlice,
-} from 'redux/contacts';
+import { contactsSelectors, contactsSlice } from 'redux/contacts';
 import { Box } from 'components/Box';
 import { ContactForm } from 'components/ContactForm';
 import { Filter } from 'components/Filter';
@@ -19,69 +15,50 @@ import { nanoid } from 'nanoid';
 export const App = () => {
   const { data, error, isUninitialized, isFetching } = useGetContactsQuery('', {
     // skip: '' === '',
-    // pollingInterval: 60000,
+    // pollingInterval: 3000,
     // refetchOnFocus: true,
     // refetchOnReconnect: true,
   });
-  console.log('data', data);
   const [addContact] = useAddContactMutation();
   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const dispatch = useDispatch();
+  const filter = useSelector(contactsSelectors.selectFilter);
 
-  // const dispatch = useDispatch();
-  // const isLoading = useSelector(contactsSelectors.selectIsLoading);
-  // const error = useSelector(contactsSelectors.selectError);
-  // const items = useSelector(contactsSelectors.selectContacts);
-  // const filter = useSelector(contactsSelectors.selectFilter);
-
-  // useEffect(() => {
-  //   dispatch(contactsOperations.fetchContacts());
-  // }, [dispatch]);
-
-  function handleSubmit(person) {
-    // const { data } = useAddContactMutation(item);
-    const { one } = addContact(person);
-    console.log('one', one);
+  function handleSubmit({ lastName, firstName, phone }) {
     const checkName = data.some(
       item =>
-        item.lastName.toLowerCase().trim() ===
-          one.lastName.toLowerCase().trim() &&
-        item.firstName.toLowerCase().trim() ===
-          one.firstName.toLowerCase().trim()
+        item.lastName.toLowerCase().trim() === lastName.toLowerCase().trim() &&
+        item.firstName.toLowerCase().trim() === firstName.toLowerCase().trim()
     );
-    // checkName
-    // ? alert(`${(lastName, firstName)} is already in contacts`)
-    // : dispatch(
-    //     contactsOperations.addContact({
-    //       id: nanoid(),
-    //       lastName,
-    //       firstName,
-    //       phone,
-    //     })
-    //   );
+    checkName
+      ? alert(`${(lastName, firstName)} is already in contacts`)
+      : addContact({
+          id: nanoid(),
+          lastName,
+          firstName,
+          phone,
+        });
   }
 
   function onFilterChange([value]) {
-    // !value
-    //   ? dispatch(contactsSlice.findContact((value = '')))
-    //   : dispatch(contactsSlice.findContact(value));
-    // skip: value===''
+    if (!isUninitialized) {
+      !value
+        ? dispatch(contactsSlice.findContact((value = '')))
+        : dispatch(contactsSlice.findContact(value));
+    }
   }
 
-  // const filteredItems = useMemo(() => {
-  //   if (filter) {
-  //     return items.filter(item => {
-  //       return item.lastName
-  //         .toLowerCase()
-  //         .trim()
-  //         .includes(filter.toLowerCase().trim());
-  //     });
-  //   }
-  //   return items;
-  // }, [filter, items]);
-
-  // function handleDelete(itemID) {
-  //   dispatch(contactsOperations.deleteContact(itemID));
-  // }
+  const filteredItems = useMemo(() => {
+    if (filter) {
+      return data.filter(item => {
+        return item.lastName
+          .toLowerCase()
+          .trim()
+          .includes(filter.toLowerCase().trim());
+      });
+    }
+    return data;
+  }, [data, filter]);
 
   return (
     <Box width={1} p={4} bg="bgBasic" as="main">
@@ -91,14 +68,13 @@ export const App = () => {
       {error && <p>{error}</p>}
       <h1>Phonebook</h1>
       <ContactForm onFormSubmit={handleSubmit} />
-      {/* <ContactForm /> */}
       <h2>Contacts</h2>
       <Filter onChange={onFilterChange} />
       {isFetching && <p>Loading contacts...</p>}
       {data && data.length > 0 && (
         <ContactList
           onDelete={deleteContact}
-          list={data}
+          list={filteredItems}
           deleting={isDeleting}
         />
       )}

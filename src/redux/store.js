@@ -1,23 +1,15 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import { contactsSlice } from './contacts/contactsSlice';
-// import logger from 'redux-logger';
-
-// export const store = configureStore({
-//   reducer: {
-//     contacts: contactsSlice.reducer,
-//   },
-//   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
-// });
-
 import { configureStore } from '@reduxjs/toolkit';
 // Or from '@reduxjs/toolkit/query/react'
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { contactsApi } from './contacts/contacts';
+import { contactsSlice } from './contacts/contactsSlice';
+// import logger from 'redux-logger';
 
 export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [contactsApi.reducerPath]: contactsApi.reducer,
+    contacts: contactsSlice.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.

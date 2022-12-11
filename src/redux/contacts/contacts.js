@@ -7,39 +7,46 @@ export const contactsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://6391cf11ac688bbe4c533d42.mockapi.io',
   }),
-  tagTypes: ['Contact'],
-  endpoints: builder => ({
-    getContacts: builder.query({
-      query: () => `/phonebook`,
+  tagTypes: ['Contacts'],
+  endpoints: build => ({
+    getContacts: build.query({
+      query: () => '/phonebook',
+      // Provides a list of `Contacts` by `id`.
+      // If any mutation is executed that `invalidate`s any of these tags, this query will re-run to be always up-to-date.
+      // The `LIST` id is a "virtual id" we just made up to be able to invalidate this query specifically if a new `Contacts` element was added.
+      providesTags: result =>
+        // is result available?
+        result
+          ? // successful query
+            [
+              ...result.map(({ id }) => ({ type: 'Contacts', id })),
+              { type: 'Contacts', id: 'LIST' },
+            ]
+          : // an error occurred, but we still want to refetch this query when `{ type: 'Contacts', id: 'LIST' }` is invalidated
+            [{ type: 'Contacts', id: 'LIST' }],
     }),
-    providesTags: ['Contact'],
-    addContact: builder.mutation({
-      // note: an optional `queryFn` may be used in place of `query`
-      query: ({ lastName, firstName, phone }) => ({
-        url: '/phonebook',
-        method: 'POST',
-        body: { lastName, firstName, phone },
-      }),
-      invalidatesTags: ['Contact'],
+    addContact: build.mutation({
+      query({ lastName, firstName, phone }) {
+        return {
+          url: `/phonebook`,
+          method: 'POST',
+          body: { lastName, firstName, phone },
+        };
+      },
+      // Invalidates all Post-type queries providing the `LIST` id - after all, depending of the sort order,
+      // that newly created post could show up in any lists.
+      invalidatesTags: [{ type: 'Contacts', id: 'LIST' }],
     }),
-
-    deleteContact: builder.mutation({
-      // note: an optional `queryFn` may be used in place of `query`
-      query: itemId => ({
-        url: `/phonebook/${itemId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Contact'],
+    deleteContact: build.mutation({
+      query(id) {
+        return {
+          url: `/phonebook/${id}`,
+          method: 'DELETE',
+        };
+      },
+      // Invalidates all queries that subscribe to this Contacts `id` only.
+      invalidatesTags: (result, error, id) => [{ type: 'Contacts', id }],
     }),
-    // deleteContact: builder.mutation({
-    //   query(itemId) {
-    //     return {
-    //       url: `/phonebook/${itemId}`,
-    //       method: 'DELETE',
-    //     };
-    //   },
-    //   invalidatesTags: ['Contact'],
-    // }),
   }),
 });
 

@@ -34,15 +34,15 @@ export const ContactList = ({ list, onDelete, deleting }) => {
   );
 };
 
-// ContactList.propTypes = {
-//   list: PropTypes.arrayOf(
-//     PropTypes.exact({
-//       id: PropTypes.string.isRequired,
-//       createdAt: PropTypes.string,
-//       lastName: PropTypes.string.isRequired,
-//       firstName: PropTypes.string.isRequired,
-//       phone: PropTypes.string.isRequired,
-//     })
-//   ),
-//   onDelete: PropTypes.func.isRequired,
-// };
+ContactList.propTypes = {
+  list: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      createdAt: PropTypes.string,
+      lastName: PropTypes.string.isRequired,
+      firstName: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+    })
+  ),
+  onDelete: PropTypes.func.isRequired,
+};

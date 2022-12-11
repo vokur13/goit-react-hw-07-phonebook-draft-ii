@@ -95,6 +95,6 @@ export const ContactForm = ({ onFormSubmit }) => {
 
 // disabled={!data}
 
-// ContactForm.propTypes = {
-//   onFormSubmit: PropTypes.func.isRequired,
-// };
+ContactForm.propTypes = {
+  onFormSubmit: PropTypes.func.isRequired,
+};
