@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   useGetContactsQuery,
   useAddContactMutation,
@@ -19,8 +22,9 @@ export const App = () => {
     // refetchOnFocus: true,
     // refetchOnReconnect: true,
   });
-  const [addContact, { isLoading }] = useAddContactMutation();
+  const [addContact, { isLoading, isSuccess }] = useAddContactMutation();
   const filter = useSelector(contactsSelectors.selectFilter);
+  const notify = text => toast(text);
 
   console.log(isUninitialized);
 
@@ -40,6 +44,7 @@ export const App = () => {
             firstName,
             phone,
           });
+      //  notify(`Contact ${lastName}, ${firstName} created`);
     } catch (error) {
       console.log(error.message);
     }
@@ -65,6 +70,7 @@ export const App = () => {
 
   return (
     <Box width={1} p={4} bg="bgBasic" as="main">
+      <ToastContainer />
       {/* <button onClick={refetch} disabled={isUninitialized}>
         Refetch
       </button> */}

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Box } from '../Box';
 import { List } from './ContactList.styled';
 import { ContactItem } from '../ContactItem';
@@ -20,12 +19,4 @@ export const ContactList = ({ list }) => {
       </List>
     </Box>
   );
-};
-
-ContactList.propTypes = {
-  list: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-    })
-  ),
 };
