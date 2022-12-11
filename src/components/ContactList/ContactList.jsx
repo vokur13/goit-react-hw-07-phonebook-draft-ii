@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { Box } from '../Box';
-import { List, Item, Name, Number } from './ContactList.styled';
-import { Button } from '../Button';
+import { List } from './ContactList.styled';
+import { ContactItem } from '../ContactItem';
 
-export const ContactList = ({ list, onDelete, deleting }) => {
+export const ContactList = ({ list }) => {
   return (
     <Box
       display="block"
@@ -15,20 +15,8 @@ export const ContactList = ({ list, onDelete, deleting }) => {
     >
       <List>
         {list
-          .map(item => (
-            <Item key={item.id}>
-              <Name>{item.lastName + ', ' + item.firstName + ':'}</Name>
-              <Number>{item.phone}</Number>
-              <Button type="button" onClick={() => onDelete(item.id)}>
-                {deleting ? 'Deleting...' : 'Delete'}
-              </Button>
-            </Item>
-          ))
-          .sort((a, b) =>
-            a.props.children[0].props.children.localeCompare(
-              b.props.children[0].props.children
-            )
-          )}
+          .map(item => <ContactItem key={item.id} {...item} />)
+          .sort((a, b) => a.props.lastName.localeCompare(b.props.lastName))}
       </List>
     </Box>
   );
@@ -38,11 +26,6 @@ ContactList.propTypes = {
   list: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.string.isRequired,
-      createdAt: PropTypes.string,
-      lastName: PropTypes.string.isRequired,
-      firstName: PropTypes.string.isRequired,
-      phone: PropTypes.string.isRequired,
     })
   ),
-  onDelete: PropTypes.func.isRequired,
 };

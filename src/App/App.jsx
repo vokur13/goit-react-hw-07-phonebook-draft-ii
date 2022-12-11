@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   useGetContactsQuery,
   useAddContactMutation,
-  useDeleteContactMutation,
 } from 'redux/contacts/contacts';
 import { contactsSelectors, contactsSlice } from 'redux/contacts';
 import { Box } from 'components/Box';
@@ -13,39 +12,43 @@ import { ContactList } from 'components/ContactList';
 import { nanoid } from 'nanoid';
 
 export const App = () => {
+  const dispatch = useDispatch();
   const { data, error, isUninitialized, isFetching } = useGetContactsQuery('', {
     // skip: '' === '',
     // pollingInterval: 3000,
     // refetchOnFocus: true,
     // refetchOnReconnect: true,
   });
-  const [addContact] = useAddContactMutation();
-  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
-  const dispatch = useDispatch();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const filter = useSelector(contactsSelectors.selectFilter);
 
-  function handleSubmit({ lastName, firstName, phone }) {
-    const checkName = data.some(
-      item =>
-        item.lastName.toLowerCase().trim() === lastName.toLowerCase().trim() &&
-        item.firstName.toLowerCase().trim() === firstName.toLowerCase().trim()
-    );
-    checkName
-      ? alert(`${(lastName, firstName)} is already in contacts`)
-      : addContact({
-          id: nanoid(),
-          lastName,
-          firstName,
-          phone,
-        });
+  console.log(isUninitialized);
+
+  async function handleSubmit({ lastName, firstName, phone }) {
+    try {
+      const checkName = data.some(
+        item =>
+          item.lastName.toLowerCase().trim() ===
+            lastName.toLowerCase().trim() &&
+          item.firstName.toLowerCase().trim() === firstName.toLowerCase().trim()
+      );
+      checkName
+        ? alert(`${(lastName, firstName)} is already in contacts`)
+        : await addContact({
+            id: nanoid(),
+            lastName,
+            firstName,
+            phone,
+          });
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   function onFilterChange([value]) {
-    if (!isUninitialized) {
-      !value
-        ? dispatch(contactsSlice.findContact((value = '')))
-        : dispatch(contactsSlice.findContact(value));
-    }
+    !value
+      ? dispatch(contactsSlice.findContact((value = '')))
+      : dispatch(contactsSlice.findContact(value));
   }
 
   const filteredItems = useMemo(() => {
@@ -67,17 +70,11 @@ export const App = () => {
       </button> */}
       {error && <p>{error}</p>}
       <h1>Phonebook</h1>
-      <ContactForm onFormSubmit={handleSubmit} />
+      <ContactForm onFormSubmit={handleSubmit} isLoading={isLoading} />
       <h2>Contacts</h2>
       <Filter onChange={onFilterChange} />
       {isFetching && <p>Loading contacts...</p>}
-      {data && data.length > 0 && (
-        <ContactList
-          onDelete={deleteContact}
-          list={filteredItems}
-          deleting={isDeleting}
-        />
-      )}
+      {data && data.length > 0 && <ContactList list={filteredItems} />}
     </Box>
   );
 };

@@ -6,7 +6,7 @@ import { Box } from '../Box';
 import { Form, Label, Input } from './ContactForm.styled';
 import { Button } from '../Button';
 
-export const ContactForm = ({ onFormSubmit }) => {
+export const ContactForm = ({ onFormSubmit, isLoading }) => {
   const lastNameId = nanoid();
   const firstNameId = nanoid();
   const phoneID = nanoid();
@@ -86,8 +86,9 @@ export const ContactForm = ({ onFormSubmit }) => {
           aria-invalid={errors.phone ? 'true' : 'false'}
         />
         {errors.phone && <p role="alert">{errors.phone?.message}</p>}
-        {/* <input type="submit" /> */}
-        <Button type="submit">Add contact</Button>
+        <Button type="submit" disabled={isLoading}>
+          Add contact
+        </Button>
       </Form>
     </Box>
   );
