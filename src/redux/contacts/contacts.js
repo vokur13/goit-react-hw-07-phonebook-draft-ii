@@ -25,6 +25,10 @@ export const contactsApi = createApi({
           : // an error occurred, but we still want to refetch this query when `{ type: 'Contacts', id: 'LIST' }` is invalidated
             [{ type: 'Contacts', id: 'LIST' }],
     }),
+    getContactbyName: build.query({
+      query: lastName => `/phonebook/${lastName}`,
+      providesTags: (result, error, id) => [{ type: 'Contacts', id }],
+    }),
     addContact: build.mutation({
       query(body) {
         return {
@@ -54,6 +58,7 @@ export const contactsApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
   useGetContactsQuery,
+  useGetContactbyNameQuery,
   useAddContactMutation,
   useDeleteContactMutation,
 } = contactsApi;

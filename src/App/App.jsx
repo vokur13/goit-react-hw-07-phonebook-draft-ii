@@ -21,6 +21,7 @@ export const App = () => {
     // refetchOnFocus: true,
     refetchOnReconnect: true,
   });
+
   const [addContact, { isLoading }] = useAddContactMutation();
   const filter = useSelector(contactsSelectors.selectFilter);
   const notify = text => toast(text);
@@ -53,6 +54,7 @@ export const App = () => {
 
   function onFilterChange([value]) {
     dispatch(contactsSlice.findContact(value));
+
     // !value
     //   ? dispatch(contactsSlice.findContact((value = '')))
     //   : dispatch(contactsSlice.findContact(value));
