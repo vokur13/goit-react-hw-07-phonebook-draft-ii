@@ -19,7 +19,7 @@ export const App = () => {
     // skip: '' === '',
     // pollingInterval: 3000,
     // refetchOnFocus: true,
-    // refetchOnReconnect: true,
+    refetchOnReconnect: true,
   });
   const [addContact, { isLoading }] = useAddContactMutation();
   const filter = useSelector(contactsSelectors.selectFilter);
@@ -52,9 +52,10 @@ export const App = () => {
   }
 
   function onFilterChange([value]) {
-    !value
-      ? dispatch(contactsSlice.findContact((value = '')))
-      : dispatch(contactsSlice.findContact(value));
+    dispatch(contactsSlice.findContact(value));
+    // !value
+    //   ? dispatch(contactsSlice.findContact((value = '')))
+    //   : dispatch(contactsSlice.findContact(value));
   }
 
   const filteredItems = useMemo(() => {
@@ -72,9 +73,6 @@ export const App = () => {
   return (
     <Box width={1} p={4} bg="bgBasic" as="main">
       <ToastContainer />
-      {/* <button onClick={refetch} disabled={isUninitialized}>
-        Refetch
-      </button> */}
       {error && <p>{error}</p>}
       <h1>Phonebook</h1>
       <ContactForm onFormSubmit={handleSubmit} isLoading={isLoading} />
